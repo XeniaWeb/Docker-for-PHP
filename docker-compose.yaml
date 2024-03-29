@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   webserver:
-    container_name: nginx
+    container_name: webserver
     build:
       context: .
       dockerfile: ./.docker/nginx/Dockerfile
@@ -13,7 +13,7 @@ services:
 #        - USER=${USER:-laravel}
     restart: unless-stopped
     ports:
-      - "${WEBSERVER_EXT_PORT:-8081}:80"
+      - "${WEBSERVER_EXT_PORT:-8086}:80"
     volumes:
       - ./:/var/www/html
       - ./.docker/nginx/conf.d:/etc/nginx/conf.d
@@ -23,7 +23,7 @@ services:
       - php-app
 
   php-app:
-    container_name: php-fpm
+    container_name: php-app
     build:
       context: .
       dockerfile: ./.docker/php-fpm/Dockerfile
@@ -45,6 +45,7 @@ services:
 
 
   postgres:
+    container_name: postgres
     image: postgres:latest
     restart: unless-stopped
     environment:
@@ -70,6 +71,7 @@ services:
       timeout: 5s
 
   node:
+    container_name: node
     image: node:alpine
     working_dir: /var/www/html
     volumes:
@@ -81,6 +83,7 @@ services:
       - app-network
 
   redis:
+    container_name: redis
     image: "redis:alpine"
     restart: unless-stopped
     networks:
@@ -92,4 +95,5 @@ services:
 
 networks:
   app-network:
+    name: app-network
     driver: bridge
